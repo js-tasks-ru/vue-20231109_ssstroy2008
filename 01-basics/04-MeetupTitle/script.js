@@ -2,18 +2,17 @@ import { createApp, defineComponent } from './vendor/vue.esm-browser.js';
 
 const API_URL = 'https://course-vue.javascript.ru/api';
 
-function fetchMeetupById(meetupId) {
-  return  fetch(`${API_URL}/meetups/${meetupId}`).then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      return response.json().then((error) => {
+async function fetchMeetupById() {
+    return await fetch(`${API_URL}/meetups/`).then(async (response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        const error = await response.json();
         throw error;
-      });
-    }
+      }
+    
   });
 }
-
 // Требуется создать Vue приложение
 const App = defineComponent({
   name: 'App',
@@ -21,7 +20,7 @@ const App = defineComponent({
   data() {
       return {
         meetups: null,
-        result: ["MSK VUE.JS MEETUP #1", "MSK VUE.JS MEETUP #2", "MSK VUE.JS MEETUP #3", "MSK VUE.JS MEETUP #4"],
+        result: [],
         title: '',
         state: null
       }
@@ -34,17 +33,19 @@ const App = defineComponent({
           this.title = this.result[i]
         }
       }
+      console.log(this.result)
     }
   },
 
   mounted() {
-    this.meetups = fetchMeetupById(5) 
+    this.meetups = fetchMeetupById()
     let result = this.result
     this.meetups.then(function(meetup) {
-      result.push(meetup.title)
+      for (let i = 0; i < meetup.length; i++) {
+        result.push(meetup[i].title)
+      }
     });
   },
-  
 })
 
 
