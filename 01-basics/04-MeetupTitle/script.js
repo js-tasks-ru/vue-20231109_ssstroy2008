@@ -33,7 +33,6 @@ const App = defineComponent({
           this.title = this.result[i]
         }
       }
-      console.log(this.result)
     }
   },
 
