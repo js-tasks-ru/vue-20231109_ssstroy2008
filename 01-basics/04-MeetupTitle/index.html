@@ -7,15 +7,9 @@
   <body>
     <div v-if="meetups" id="app">
       <div>
-        <label><input type="radio" name="meetupId" v-model="value" value="1" /> 1</label>
-        <label><input type="radio" name="meetupId" v-model="value" value="2" /> 2</label>
-        <label><input type="radio" name="meetupId" v-model="value" value="3" /> 3</label>
-        <label><input type="radio" name="meetupId" v-model="value" value="4" /> 4</label>
-        <label><input type="radio" name="meetupId" v-model="value" value="5" /> 5</label>
-
+        <label v-for="i in 5"><input v-model="state" type="radio" name="meetupId" :value="i" />{{ i }}</label>
         <br />
-
-        <h3 v-for="item in meetups">{{item}}</h3>
+        <h3>{{ title }}</h3>
       </div>
     </div>
 

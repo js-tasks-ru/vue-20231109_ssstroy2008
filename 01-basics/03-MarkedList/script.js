@@ -31,6 +31,8 @@ const emails = [
 
 // Требуется создать Vue приложение
 const App = defineComponent({
+  name: 'App',
+
   data() {
       return {
         emailInputValue: '',
@@ -38,6 +40,7 @@ const App = defineComponent({
         emailsObj: null,
       }
   },
+
   computed: {
       filterEmails() {
         for (let item of this.emailsObj) {
@@ -51,10 +54,12 @@ const App = defineComponent({
         return this.emailsObj
       }
   }, 
+
   mounted() {
     this.emailsList = emails
     this.emailsObj = this.emailsList.map(item => ({email: item, isMarked: false}))
   }
+  
 })
 
 const app = createApp(App)
