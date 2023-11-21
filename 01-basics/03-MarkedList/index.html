@@ -11,13 +11,13 @@
     </style>
   </head>
   <body>
-    <div v-if="emailsList && emailsObj" id="app" style="margin-top: 2rem">
+    <div v-if="emailsList" id="app" style="margin-top: 2rem">
       <div class="container">
         <div class="form-group">
           <input v-model="emailInputValue" type="search" />
         </div>
         <ul>
-          <li v-for="item in emailsObj" :class="{'marked': item.isMarked === true}">{{ item.email }}</li>
+          <li v-for="item in filterEmails" :class="{'marked': item.isMarked === true}">{{ item.email }}</li>
         </ul>
       </div>
     </div>

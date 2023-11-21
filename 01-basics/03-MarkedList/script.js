@@ -35,29 +35,27 @@ const App = defineComponent({
 
   data() {
       return {
-        emailInputValue: '',
+        emailInputValue: null,
         emailsList: null,
-        emailsObj: null,
       }
   },
 
   computed: {
       filterEmails() {
-        for (let item of this.emailsObj) {
-          if (item.email.includes(this.emailInputValue) && this.emailInputValue !== '') {
-            
-            item.isMarked = true
-          } else {
-            item.isMarked = false
-          }
-        }
-        return this.emailsObj
+        let v = this.emailsList.map(item => ({email: item, isMarked: false}))
+        v.filter((item) => {
+            if (item.email.includes(this.emailInputValue) && this.emailInputValue !== '') {
+              item.isMarked = true
+            } else {
+              item.isMarked = false
+            }
+        })
+        return v
       }
   }, 
 
-  mounted() {
+  created() {
     this.emailsList = emails
-    this.emailsObj = this.emailsList.map(item => ({email: item, isMarked: false}))
   }
   
 })
