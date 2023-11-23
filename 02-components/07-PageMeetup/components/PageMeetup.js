@@ -23,7 +23,8 @@ export default defineComponent({
 
   data() {
     return {
-      meetup: null
+      meetup: null,
+      error: null
     }
   },
 
@@ -47,6 +48,7 @@ export default defineComponent({
         this.meetup = meet
       }).catch((err) => {
         this.meetup = undefined
+        this.error = err.message
      });
     }
   },
@@ -55,26 +57,23 @@ export default defineComponent({
       this.meetup = meet
     }).catch((err) => {
       this.meetup = undefined
+      this.error = err.message
    });
   },
 
   template: `
     <div class="page-meetup">
-    
 
       <template v-if="meetup">
         <MeetupView :meetup="meetup"/>
       </template>
       
       <UiContainer v-else-if="meetup === undefined">
-        <UiAlert>error</UiAlert>
+        <UiAlert>{{ error }}</UiAlert>
       </UiContainer>
 
       <UiContainer v-else-if="!meetup">
         <UiAlert>Загрузка...</UiAlert>
       </UiContainer>
-
-
-
     </div>`,
 });
