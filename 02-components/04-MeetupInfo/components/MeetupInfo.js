@@ -24,6 +24,9 @@ export default defineComponent({
         month: 'long',
         day: 'numeric',
       });
+    },
+    dateIsoFormatting(date) {
+      return new Date(date).toISOString().split('T')[0];
     }
   },
 
@@ -39,7 +42,7 @@ export default defineComponent({
       </li>
       <li>
         <img class="icon meetup-info__icon" alt="icon" src="/assets/icons/icon-cal-lg.svg" />
-        <time :datetime="dateFormatting(date)">{{ dateFormatting(date) }}</time>
+        <time :datetime="dateIsoFormatting(date)">{{ dateFormatting(date) }}</time>
       </li>
     </ul>`,
 });
