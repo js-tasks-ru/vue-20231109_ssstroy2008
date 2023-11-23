@@ -24,7 +24,7 @@ export default defineComponent({
   data() {
     return {
       meetup: null,
-      text: 'Загрузка...'
+      error: null
     }
   },
 
@@ -38,7 +38,6 @@ export default defineComponent({
   watch: {
     meetupId() {
       this.fetchMeetupId()
-
     }
   },
 
@@ -46,24 +45,15 @@ export default defineComponent({
     fetchMeetupId() {
       fetchMeetupById(this.meetupId).then((meet) => {
         this.meetup = meet
-        this.text = 'Загрузка...'
       }).catch((err) => {
         this.meetup = undefined
-        this.text = err.message
+        this.error = err.message
      });
     },
-    getText() {
-
-    }
   },
+
   created() {
-    fetchMeetupById(this.meetupId).then((meet) => {
-      this.meetup = meet
-      this.text = 'Загрузка...'
-    }).catch((err) => {
-      this.meetup = undefined
-      this.text = err.message
-   });
+    this.fetchMeetupId()
   },
 
   template: `
@@ -74,11 +64,11 @@ export default defineComponent({
       </template>
       
       <UiContainer v-else-if="meetup === undefined">
-        <UiAlert :text="text"></UiAlert>
+        <UiAlert :text="error"></UiAlert>
       </UiContainer>
 
       <UiContainer v-else-if="!meetup">
-        <UiAlert :text="text"></UiAlert>
+        <UiAlert :text="'Загрузка...'"></UiAlert>
       </UiContainer>
     </div>`,
 });
