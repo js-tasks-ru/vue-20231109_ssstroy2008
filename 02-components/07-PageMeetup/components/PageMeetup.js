@@ -24,7 +24,7 @@ export default defineComponent({
   data() {
     return {
       meetup: null,
-      error: null
+      text: 'Загрузка...'
     }
   },
 
@@ -46,18 +46,23 @@ export default defineComponent({
     fetchMeetupId() {
       fetchMeetupById(this.meetupId).then((meet) => {
         this.meetup = meet
+        this.text = 'Загрузка...'
       }).catch((err) => {
         this.meetup = undefined
-        this.error = err.message
+        this.text = err.message
      });
+    },
+    getText() {
+
     }
   },
   created() {
     fetchMeetupById(this.meetupId).then((meet) => {
       this.meetup = meet
+      this.text = 'Загрузка...'
     }).catch((err) => {
       this.meetup = undefined
-      this.error = err.message
+      this.text = err.message
    });
   },
 
@@ -69,11 +74,11 @@ export default defineComponent({
       </template>
       
       <UiContainer v-else-if="meetup === undefined">
-        <UiAlert>{{ error }}</UiAlert>
+        <UiAlert :text="text"></UiAlert>
       </UiContainer>
 
       <UiContainer v-else-if="!meetup">
-        <UiAlert>Загрузка...</UiAlert>
+        <UiAlert :text="text"></UiAlert>
       </UiContainer>
     </div>`,
 });
