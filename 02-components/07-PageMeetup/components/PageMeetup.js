@@ -1,7 +1,12 @@
 import { defineComponent } from '../vendor/vue.esm-browser.js';
 import UiContainer from './UiContainer.js';
 import UiAlert from './UiAlert.js';
-// import { fetchMeetupById } from './meetupService.js';
+import MeetupDescription from '../../02-MeetupDescription/components/MeetupDescription.js'
+import MeetupCover from '../../03-MeetupCover/components/MeetupCover.js'
+import MeetupInfo from '../../04-MeetupInfo/components/MeetupInfo.js'
+import MeetupAgenda from '../../05-MeetupAgenda/components/MeetupAgenda.js'
+import MeetupView from '../../06-MeetupView/components/MeetupView.js';
+import { fetchMeetupById } from '../../07-PageMeetup/meetupService.js';
 
 export default defineComponent({
   name: 'PageMeetup',
@@ -9,18 +14,67 @@ export default defineComponent({
   components: {
     UiAlert,
     UiContainer,
+    MeetupView,
+    MeetupDescription,
+    MeetupCover,
+    MeetupInfo,
+    MeetupAgenda,
+  },
+
+  data() {
+    return {
+      meetup: null,
+      error: null,
+      isMeetupLoading: false
+    }
+  },
+
+  props: {
+    meetupId: {
+      type: Number,
+      required: true,
+    }
+  },
+
+  watch: {
+    meetupId() {
+      this.fetchMeetupId()
+    }
+  },
+
+  methods: {
+    fetchMeetupId() {
+      this.isMeetupLoading = true
+      fetchMeetupById(this.meetupId).then((meet) => {
+        this.meetup = meet
+      }).catch((err) => {
+        this.meetup = undefined
+        this.error = err.message
+     }).finally(() => {
+        this.isMeetupLoading = false
+     })
+    },
+  },
+
+  created() {
+    this.fetchMeetupId()
   },
 
   template: `
     <div class="page-meetup">
-      <!-- meetup view -->
-
-      <UiContainer>
-        <UiAlert>Загрузка...</UiAlert>
+      <template v-if="!isMeetupLoading">
+        <template v-if="meetup">
+          <MeetupView :meetup="meetup"/>
+        </template>
+        <UiContainer v-else-if="meetup === undefined">
+          <UiAlert :text="error"></UiAlert>
+        </UiContainer>
+      </template>
+      <UiContainer v-else>
+          <UiAlert :text="'Загрузка...'"></UiAlert>
       </UiContainer>
 
-      <UiContainer>
-        <UiAlert>error</UiAlert>
-      </UiContainer>
+
+
     </div>`,
 });
