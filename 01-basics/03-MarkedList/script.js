@@ -43,7 +43,7 @@ const App = defineComponent({
   computed: {
       filterEmails() {
         let v = this.emailsList.map(item => ({email: item, isMarked: false}))
-        v.filter((item) => {
+        v.forEach((item) => {
             if (item.email.includes(this.emailInputValue) && this.emailInputValue !== '') {
               item.isMarked = true
             } else {
