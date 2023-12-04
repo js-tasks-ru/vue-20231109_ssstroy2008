@@ -170,6 +170,9 @@ export default {
       required: true,
     },
   },
+  mounted() {
+    console.log(this.meetups)
+  }
 };
 </script>
 

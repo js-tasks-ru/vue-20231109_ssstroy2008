@@ -1,18 +1,36 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <UiIcon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{'dropdown_opened' : isOpen === true}">
+    <button 
+      @click="dropdown()"  
+      type="button"  
+      class="dropdown__toggle"
+      :class="{ 'dropdown__toggle_icon' : isIconExist === true }"
+    >
+      <UiIcon v-if="currentIcon" :icon="currentIcon" class="dropdown__icon" />
+      <span v-if="modelValue === undefined">{{ title }}</span>
+      <span v-else>{{ currentTitle }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div 
+      v-show="isOpen" 
+      class='dropdown__menu'
+      role="listbox"
+    >
+      <button 
+        v-for="option in options" 
+        :key="option.value" 
+        @click="buttonClick(option.value)" 
+        class="dropdown__item"  
+        :class="{ 'dropdown__item_icon' : isIconExist === true }"
+        role="option" 
+        type="button"
+      >
+        <UiIcon 
+          v-if="option.icon"
+          :icon="option.icon" 
+          class="dropdown__icon" 
+        />
+          {{ option.text }}
       </button>
     </div>
   </div>
@@ -21,10 +39,86 @@
 <script>
 import UiIcon from './UiIcon.vue';
 
+
 export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
+
+  data() {
+    return {
+      isOpen: false,
+    }
+  },
+
+  props: {
+    options: {
+      type: Array,
+      required: true,
+    },
+
+    modelValue: {
+      required: true,
+    },
+
+    title: {
+      type: String,
+      required: true,
+    }
+
+  },
+
+  emits: ['update:modelValue'],
+
+  computed: {
+    currentTitle() {
+      let current
+      for (let key in this.options) {
+        if (this.options[key].value === this.modelValue) {
+          current = this.options[key].text
+        }
+      }
+      return current
+    },
+
+    currentIcon() {
+      let current
+      for (let key in this.options) {
+        if (this.options[key].value === this.modelValue) {
+          current = this.options[key].icon
+        }
+      }
+      return current
+    },
+
+    isIconExist() {
+      let existence
+      for (let key in this.options) {
+        if (this.options[key].icon) {
+          existence = true
+          break 
+        }
+      }
+      return existence
+    }
+  },
+
+  // watch: {
+  //   modelValue() {
+  //     this.isOpen = false
+  //   }
+  // },
+
+  methods: {
+    buttonClick(value) {
+      this.$emit('update:modelValue', value)
+      this.isOpen = false
+    },
+
+    dropdown() {
+      this.isOpen = !this.isOpen
+    }
+  },
 };
 </script>
 

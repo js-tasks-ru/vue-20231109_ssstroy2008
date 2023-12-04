@@ -8,6 +8,7 @@ export const router = createRouter({
       path: '/',
       name: 'index',
       component: () => import('../views/PageMeetups.vue'),
+     
     },
     {
       path: '/meetups',
@@ -41,4 +42,21 @@ export const router = createRouter({
       ],
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return {
+        el: to.hash,
+      }
+    }
+    if (to.meta.saveScrollPosition && from.meta.saveScrollPosition) {
+      return savedPosition 
+    }
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { 
+        top: 0, left: 0 
+      }
+    }
+  } 
 });

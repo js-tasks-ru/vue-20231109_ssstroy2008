@@ -3,6 +3,7 @@ import { isAuthenticated } from '../services/authService.js';
 
 const router = createRouter({
   history: createWebHistory('/05-vue-router/05-AuthGuard'),
+
   routes: [
     {
       path: '/',
@@ -11,6 +12,9 @@ const router = createRouter({
     },
     {
       path: '/login',
+      query: {
+        from: ''
+      },
       meta: {
         requireGuest: true,
       },
@@ -39,5 +43,22 @@ const router = createRouter({
     },
   ],
 });
+
+router.beforeEach((to, from) => {
+  if (isAuthenticated === false ) {
+    if (to.meta.requireGuest === true) {
+      router.push('/')
+    } 
+    return false
+  }
+  if (isAuthenticated === true) {
+    if (to.meta.requireGuest) {
+      router.push('/')
+    }
+  }
+
+})
+
+
 
 export { router };
