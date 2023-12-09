@@ -1,18 +1,18 @@
 <template>
-  <form class="meetup-form">
+  <form class="meetup-form" @submit.prevent="$emit('submit', JSON.parse(JSON.stringify(localMeetup)))">
     <div class="meetup-form__content">
       <fieldset class="meetup-form__section">
         <UiFormGroup label="Название">
-          <UiInput name="title" />
+          <UiInput v-model="localMeetup.title" name="title" />
         </UiFormGroup>
         <UiFormGroup label="Дата">
-          <UiInputDate type="date" name="date" />
+          <UiInputDate v-model="localMeetup.date" type="date" name="date" />
         </UiFormGroup>
         <UiFormGroup label="Место">
-          <UiInput name="place" />
+          <UiInput v-model="localMeetup.place" name="place" />
         </UiFormGroup>
         <UiFormGroup label="Описание">
-          <UiInput multiline rows="3" name="description" />
+          <UiInput v-model="localMeetup.description" multiline rows="3" name="description" />
         </UiFormGroup>
         <UiFormGroup label="Изображение">
           <!--
@@ -29,16 +29,18 @@
       </fieldset>
 
       <h3 class="meetup-form__agenda-title">Программа</h3>
-      <!--
-      <meetup-agenda-item-form
+      <template v-if="localMeetup.agenda.length">
+        <meetup-agenda-item-form 
+          v-for="(agendaItem, index) in localMeetup.agenda"
          :key="agendaItem.id"
-         :agenda-item="..."
+         v-model:agenda-item="localMeetup.agenda[index]"
+         @remove="removeAgendaItem(index)"
          class="meetup-form__agenda-item"
        />
-       -->
+      </template>
 
       <div class="meetup-form__append">
-        <button class="meetup-form__append-button" type="button" data-test="addAgendaItem">
+        <button @click="addAgenda" class="meetup-form__append-button" type="button" data-test="addAgendaItem">
           + Добавить этап программы
         </button>
       </div>
@@ -47,9 +49,9 @@
     <div class="meetup-form__aside">
       <div class="meetup-form__aside-stick">
         <!-- data-test атрибуты используются для поиска нужного элемента в тестах, не удаляйте их -->
-        <ui-button variant="secondary" block class="meetup-form__aside-button" data-test="cancel">Отмена</ui-button>
+        <ui-button @click="$emit('cancel')" variant="secondary" block class="meetup-form__aside-button" data-test="cancel">Отмена</ui-button>
         <ui-button variant="primary" block class="meetup-form__aside-button" data-test="submit" type="submit">
-          SUBMIT
+          {{ submitText }}
         </ui-button>
       </div>
     </div>
@@ -63,7 +65,7 @@ import UiFormGroup from './UiFormGroup.vue';
 import UiImageUploader from './UiImageUploader.vue';
 import UiInput from './UiInput.vue';
 import UiInputDate from './UiInputDate.vue';
-// import { createAgendaItem } from '../meetupService.js';
+import { createAgendaItem } from '../meetupService.js';
 
 export default {
   name: 'MeetupForm',
@@ -77,6 +79,14 @@ export default {
     UiInputDate,
   },
 
+  inheritAttrs: false,
+
+  data() {
+    return {
+      localMeetup: JSON.parse(JSON.stringify(this.meetup)),
+    }
+  },
+
   props: {
     meetup: {
       type: Object,
@@ -88,6 +98,23 @@ export default {
       default: '',
     },
   },
+
+  emits: ['submit', 'cancel'],
+
+  computed: {
+    time() {
+      return 10.00
+    }
+  },
+
+  methods: {
+    addAgenda() {
+      this.localMeetup.agenda.push(createAgendaItem())
+    },
+    removeAgendaItem(index) {
+      this.localMeetup.agenda.splice(index, 1)
+    }
+  }
 };
 </script>
 

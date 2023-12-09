@@ -4,12 +4,12 @@
       v-for="toast in toasts" 
       :key="toast" 
       class="toast " 
-      :class="{ 'toast_success' : toast.includes('Success'), 'toast_error' : toast.includes('Error') }"
+      :class="{ 'toast_success' : toast.type === 'success', 'toast_error' : toast.type === 'error' }"
     >
       <UiIcon 
         class="toast__icon" 
-        :icon="toast.includes('Success') ? 'check-circle' : 
-        toast.includes('Error') ? 'alert-circle' : null " />
+        :icon="toast.type === 'success' ? 'check-circle' : 
+        toast.type === 'error' ? 'alert-circle' : null " />
       <UiToast :toast="toast"/>
     </div>
   </div>
@@ -28,18 +28,17 @@ export default {
   data() {
     return {
       toasts: [],
-
     }
   },
 
   methods: {
     error(message) {
-      this.toasts.push(message)
+      this.toasts.push({ message, type: 'error' })
       this.clearToast()
     },
 
     success(message) {
-      this.toasts.push(message)
+      this.toasts.push({ message, type: 'success' })
       this.clearToast()
     },
 

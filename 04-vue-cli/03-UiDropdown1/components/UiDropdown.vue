@@ -4,7 +4,7 @@
       @click="dropdown()"  
       type="button"  
       class="dropdown__toggle"
-      :class="{ 'dropdown__toggle_icon' : isIconExist === true }"
+      :class="{ 'dropdown__toggle_icon' : isIconExist }"
     >
       <UiIcon v-if="currentIcon" :icon="currentIcon" class="dropdown__icon" />
       <span v-if="modelValue === undefined">{{ title }}</span>
@@ -21,7 +21,7 @@
         :key="option.value" 
         @click="buttonClick(option.value)" 
         class="dropdown__item"  
-        :class="{ 'dropdown__item_icon' : isIconExist === true }"
+        :class="{ 'dropdown__item_icon' : isIconExist }"
         role="option" 
         type="button"
       >
@@ -72,13 +72,7 @@ export default {
 
   computed: {
     currentTitle() {
-      let current
-      for (let key in this.options) {
-        if (this.options[key].value === this.modelValue) {
-          current = this.options[key].text
-        }
-      }
-      return current
+      return this.options.find(({ value, text }) => value === this.modelValue ? text : undefined).text 
     },
 
     currentIcon() {
@@ -92,22 +86,9 @@ export default {
     },
 
     isIconExist() {
-      let existence
-      for (let key in this.options) {
-        if (this.options[key].icon) {
-          existence = true
-          break 
-        }
-      }
-      return existence
+      return this.options.some(({ icon }) => icon)
     }
   },
-
-  // watch: {
-  //   modelValue() {
-  //     this.isOpen = false
-  //   }
-  // },
 
   methods: {
     buttonClick(value) {

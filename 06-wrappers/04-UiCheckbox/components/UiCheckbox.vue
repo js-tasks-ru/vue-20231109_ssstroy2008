@@ -1,14 +1,31 @@
 <template>
   <label class="checkbox">
-    <input type="checkbox" class="checkbox__input" />
+    <input v-model="proxyModel" v-bind="$attrs" type="checkbox" class="checkbox__input" />
     <span class="checkbox__box"></span>
-    Label Text
+    <slot></slot>
   </label>
 </template>
 
 <script>
 export default {
   name: 'UiCheckbox',
+
+  props: ['modelValue'],
+
+  emits: ['update:modelValue'],
+
+  inheritAttrs: false,
+
+  computed: {
+    proxyModel: {
+      get() {
+        return this.modelValue
+      },
+      set(value) {
+        this.$emit('update:modelValue', value)
+      }
+    }
+  }
 };
 </script>
 
