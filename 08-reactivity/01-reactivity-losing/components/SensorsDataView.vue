@@ -6,24 +6,9 @@
 </template>
 
 <script>
-//import { handleError, ref, watch } from 'vue';
 import { SensorsDataController } from '../services/SensorsDataController';
 import { SensorsDataStreamingService } from '../services/SensorsDataStreamingService';
 import SensorsDataRow from './SensorsDataRow';
-
-// const sensorsReactive = ref()
-
-// watch(
-//   sensorsReactive,
-//   () => {
-//     setInterval(() => {
-//       sensorsDataController.getData();
-//     }, 1000);
-//   },
-//   {
-//     immediate: true,
-//   }
-// )
 
 export default {
   name: 'SensorsDataView',
