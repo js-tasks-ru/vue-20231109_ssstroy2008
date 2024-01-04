@@ -6,9 +6,24 @@
 </template>
 
 <script>
+//import { handleError, ref, watch } from 'vue';
 import { SensorsDataController } from '../services/SensorsDataController';
 import { SensorsDataStreamingService } from '../services/SensorsDataStreamingService';
 import SensorsDataRow from './SensorsDataRow';
+
+// const sensorsReactive = ref()
+
+// watch(
+//   sensorsReactive,
+//   () => {
+//     setInterval(() => {
+//       sensorsDataController.getData();
+//     }, 1000);
+//   },
+//   {
+//     immediate: true,
+//   }
+// )
 
 export default {
   name: 'SensorsDataView',
@@ -45,6 +60,17 @@ export default {
       this.sensors = sensors;
     },
   },
+
+  watch: {
+    sensors: {
+      immediate: true,
+      handler(newVal) {
+        setInterval(() => {
+          this.sensors = newVal;
+        }, 1000);
+      }
+    }
+  }
 };
 </script>
 

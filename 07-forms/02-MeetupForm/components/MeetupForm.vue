@@ -101,15 +101,15 @@ export default {
 
   emits: ['submit', 'cancel'],
 
-  computed: {
-    time() {
-      return 10.00
-    }
-  },
-
   methods: {
     addAgenda() {
-      this.localMeetup.agenda.push(createAgendaItem())
+      if (this.localMeetup.agenda.length) {
+        let endTime = this.localMeetup.agenda.at(-1).endsAt;
+        this.localMeetup.agenda.push(createAgendaItem())
+        this.localMeetup.agenda.at(-1).startsAt = endTime;
+      } else if (!this.localMeetup.agenda.length) {
+        this.localMeetup.agenda.push(createAgendaItem())
+      }
     },
     removeAgendaItem(index) {
       this.localMeetup.agenda.splice(index, 1)

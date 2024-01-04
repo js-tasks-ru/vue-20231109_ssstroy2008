@@ -1,8 +1,7 @@
 <template>
   <div class="input-group" 
     :class="{
-      'input-group_icon': $slots['left-icon'],
-      'input-group_icon': $slots['right-icon'],
+      'input-group_icon': $slots['left-icon'] || $slots['right-icon'],
       'input-group_icon-left': $slots['left-icon'],
       'input-group_icon-right': $slots['right-icon'],
     }"

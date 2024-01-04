@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, watchEffect, reactive } from 'vue';
 
 /**
  * @template T
@@ -6,7 +6,17 @@ import { ref } from 'vue';
  * @returns {Object<{ history: Ref<T[]> }>} - История изменения source
  */
 export function refHistory(source) {
-  const history = ref();
-  // ...
+  const history = ref([]);
+  let reactiveHistory = reactive(history);
+
+  watchEffect(
+    () => {
+      reactiveHistory.value.push(source.value)
+    },
+    {
+      flush: 'sync',
+    }
+  )
+  
   return { history };
 }
