@@ -45,6 +45,17 @@ export default {
       this.sensors = sensors;
     },
   },
+
+  watch: {
+    sensors: {
+      immediate: true,
+      handler(newVal) {
+        setInterval(() => {
+          this.sensors = newVal;
+        }, 1000);
+      }
+    }
+  }
 };
 </script>
 
