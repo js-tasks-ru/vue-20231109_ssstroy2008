@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue';
+import { ref, watch, reactive } from 'vue';
 import debounce from 'lodash/debounce';
 
 /**
@@ -8,7 +8,20 @@ import debounce from 'lodash/debounce';
  * @returns {Ref<T>} - Новый ref, обновляющийся с debounce при обновлении исходного ref-а
  */
 export function debouncedRef(source, wait) {
-  const debounced = ref(undefined); // ...
-  // ...
+  const debounced = ref(null);
+  watch(
+    () => source.value,
+    () => {
+      const waitSource = () => {
+        debounced.value = source.value;
+      }
+      const debounceFunc = debounce(waitSource, wait);
+      debounceFunc();
+    },
+    {
+      immediate: true,
+    }
+  )
+
   return debounced;
 }
