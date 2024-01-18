@@ -106,10 +106,6 @@ export default {
   data() {
     return {
       localAgendaItem: {...this.agendaItem},
-      time: {
-        start: null,
-        end: null,
-      },
     }
   },
 
@@ -117,35 +113,58 @@ export default {
     localAgendaItem: {
       deep: true,
       handler() {
-        if (this.localAgendaItem.startsAt !== '00:00' && this.localAgendaItem.endsAt !== '00:00') {
-          this.time.start = this.localAgendaItem.startsAt;
-          this.time.end = this.localAgendaItem.endsAt;
-        }
         this.$emit('update:agendaItem', {...this.localAgendaItem});
       }
     },
 
 
-    'time.start': function (val, oldValue) {
-      if (oldValue) {
-        const hours = 24;
-        let difference;
-        let newValueStart = +Array.from(val).splice(0, 2).join('');
-        let oldValueStart = +Array.from(oldValue).splice(0, 2).join('');
-        let endValue = +Array.from(this.localAgendaItem.endsAt).splice(0, 2).join('');
+    'localAgendaItem.startsAt': {
+      handler (newValue, oldValue) {
 
-        if (newValueStart > oldValueStart) {
-          difference = newValueStart - oldValueStart;
-          if (difference + endValue <= 9) {
-            this.localAgendaItem.endsAt = `0${difference + endValue}:00`
-          } else {
-            this.localAgendaItem.endsAt = `${difference + endValue}:00`
-          }
+        if (newValue) {
+          let hoursDifference;
+
+          let newValueStart = newValue.split(':'); 
+          let oldValueStart = oldValue.split(':');
+          let endValue = this.localAgendaItem.endsAt.split(':');
+
+          let newMinutes = 0;
+          let oldMinutes = 0;
+
+          let endMinutes = 0;
+          let endHours = 0;
+
+          //endsAt
+          endMinutes = this.calcMinutes(endValue);
+          endHours = Math.floor((endMinutes) / 60);
+
+          //Новое значение
+          newMinutes = this.calcMinutes(newValueStart);
+
+          //Старое значение
+          oldMinutes = this.calcMinutes(oldValueStart);
+
+          //Разница в часах
+          hoursDifference = Math.floor((newMinutes - oldMinutes) / 60);
+
+          this.localAgendaItem.endsAt = `${ (endHours + hoursDifference + 24) % 24  }:00`.padStart(5, '0');
+
         }
-
       }
     },
   },
+
+  methods: {
+      calcMinutes(array) {
+        array = array.map((item, index) => {
+          if (index === 0) {
+            return parseInt(item) * 60;
+          }
+          return parseInt(item);
+        })
+        return array.reduce((acc, item) => acc + item);
+      }
+    }
 };
 </script>
 

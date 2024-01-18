@@ -58,12 +58,6 @@ export default {
     };
   },
 
-  render() {
-    return (
-      <h1>HI</h1>
-    )
-  },
-
   methods: {
     /**
      * Переместить i-ую панель вверх

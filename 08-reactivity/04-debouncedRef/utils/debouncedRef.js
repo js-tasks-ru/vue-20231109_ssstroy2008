@@ -9,13 +9,19 @@ import debounce from 'lodash/debounce';
  */
 export function debouncedRef(source, wait) {
   const debounced = ref(null);
+
+  const waitSource = () => {
+    debounced.value = source.value;
+  }
+
+  const debounceFunc = debounce(waitSource, wait);
+
   watch(
     () => source.value,
     () => {
-      const waitSource = () => {
+      if (debounced.value === null) {
         debounced.value = source.value;
       }
-      const debounceFunc = debounce(waitSource, wait);
       debounceFunc();
     },
     {
