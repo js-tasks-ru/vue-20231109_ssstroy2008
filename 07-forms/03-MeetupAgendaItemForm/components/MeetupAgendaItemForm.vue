@@ -1,37 +1,47 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button @click="$emit('remove')" type="button" class="agenda-item-form__remove-button">
       <UiIcon icon="trash" />
     </button>
 
     <UiFormGroup>
-      <UiDropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <UiDropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" v-model="localAgendaItem.type"/>
     </UiFormGroup>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <UiFormGroup label="Начало">
-          <UiInput type="time" placeholder="00:00" name="startsAt" />
+          <UiInput type="time" placeholder="00:00" name="startsAt" v-model="localAgendaItem.startsAt"/>
         </UiFormGroup>
       </div>
       <div class="agenda-item-form__col">
         <UiFormGroup label="Окончание">
-          <UiInput type="time" placeholder="00:00" name="endsAt" />
+          <UiInput type="time" placeholder="00:00" name="endsAt" v-model="localAgendaItem.endsAt"/>
         </UiFormGroup>
       </div>
     </div>
 
-    <UiFormGroup label="Тема">
-      <UiInput name="title" />
+    <UiFormGroup 
+        :label="localAgendaItem.type === 'talk' ? 'Тема' : 
+        localAgendaItem.type === 'other' ? 'Заголовок' : 
+        'Нестандартный текст (необязательно)'">
+      <UiInput name="title" v-model="localAgendaItem.title"/>
     </UiFormGroup>
-    <UiFormGroup label="Докладчик">
-      <UiInput name="speaker" />
+    <UiFormGroup 
+        v-if="localAgendaItem.type === 'talk'" 
+        label="Докладчик">
+      <UiInput name="speaker" v-model="localAgendaItem.speaker" />
     </UiFormGroup>
-    <UiFormGroup label="Описание">
-      <UiInput multiline name="description" />
+    <UiFormGroup  
+        v-if="localAgendaItem.type === 'talk' || 
+        localAgendaItem.type === 'other'" 
+        label="Описание">
+      <UiInput multiline name="description" v-model="localAgendaItem.description" />
     </UiFormGroup>
-    <UiFormGroup label="Язык">
-      <UiDropdown title="Язык" :options="$options.talkLanguageOptions" name="language" />
+    <UiFormGroup 
+        v-if="localAgendaItem.type === 'talk'" 
+        label="Язык">
+      <UiDropdown title="Язык" :options="$options.talkLanguageOptions" name="language" v-model="localAgendaItem.language" />
     </UiFormGroup>
   </fieldset>
 </template>
@@ -90,6 +100,71 @@ export default {
       required: true,
     },
   },
+
+  emits: ['update:agendaItem', 'remove'],
+
+  data() {
+    return {
+      localAgendaItem: {...this.agendaItem},
+    }
+  },
+
+  watch: {
+    localAgendaItem: {
+      deep: true,
+      handler() {
+        this.$emit('update:agendaItem', {...this.localAgendaItem});
+      }
+    },
+
+
+    'localAgendaItem.startsAt': {
+      handler (newValue, oldValue) {
+
+        if (newValue) {
+          let hoursDifference;
+
+          let newValueStart = newValue.split(':'); 
+          let oldValueStart = oldValue.split(':');
+          let endValue = this.localAgendaItem.endsAt.split(':');
+
+          let newMinutes = 0;
+          let oldMinutes = 0;
+
+          let endMinutes = 0;
+          let endHours = 0;
+
+          //endsAt
+          endMinutes = this.calcMinutes(endValue);
+          endHours = Math.floor((endMinutes) / 60);
+
+          //Новое значение
+          newMinutes = this.calcMinutes(newValueStart);
+
+          //Старое значение
+          oldMinutes = this.calcMinutes(oldValueStart);
+
+          //Разница в часах
+          hoursDifference = Math.floor((newMinutes - oldMinutes) / 60);
+
+          this.localAgendaItem.endsAt = `${ (endHours + hoursDifference + 24) % 24  }:00`.padStart(5, '0');
+
+        }
+      }
+    },
+  },
+
+  methods: {
+      calcMinutes(array) {
+        array = array.map((item, index) => {
+          if (index === 0) {
+            return parseInt(item) * 60;
+          }
+          return parseInt(item);
+        })
+        return array.reduce((acc, item) => acc + item);
+      }
+    }
 };
 </script>
 

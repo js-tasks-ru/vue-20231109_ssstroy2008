@@ -1,10 +1,17 @@
 <template>
-  <a class="link">Link!</a>
+  <component :is="tag" class="link"><slot></slot></component>
 </template>
 
 <script>
 export default {
   name: 'UiLink',
+
+  props: { 
+    tag: {
+      required: false,
+      default: 'RouterLink'
+    } 
+  }
 };
 </script>
 

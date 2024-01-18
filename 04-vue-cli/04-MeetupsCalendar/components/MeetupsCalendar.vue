@@ -56,6 +56,10 @@ export default {
     },
   },
 
+  mounted() {
+    console.log(this.meetups)
+  },
+
   data() {
     return {
       currentDate: getFirstDateOfMonth(new Date()),

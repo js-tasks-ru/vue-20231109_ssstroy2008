@@ -1,6 +1,5 @@
 <script lang="jsx">
 // Предлагается решать задачу с использованием JSX, но вы можете использовать и чистые рендер-функции
-
 import UiButton from './UiButton.vue';
 
 export default {
